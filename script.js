@@ -1,5 +1,3 @@
-const API_KEY = "39674d78a870ac410b94cb5defdf8104";
-
 const cityInput = document.getElementById("cityInput");
 const searchBtn = document.getElementById("searchBtn");
 
@@ -15,7 +13,6 @@ const feelsLike = document.getElementById("feelsLike");
 const forecast = document.getElementById("forecast");
 const errorMessage = document.getElementById("errorMessage");
 
-
 searchBtn.addEventListener("click", () => {
     const city = cityInput.value.trim();
 
@@ -27,59 +24,53 @@ searchBtn.addEventListener("click", () => {
     getWeather(city);
 });
 
-
 cityInput.addEventListener("keypress", (event) => {
     if (event.key === "Enter") {
         searchBtn.click();
     }
 });
 
-
 async function getWeather(city) {
-
     errorMessage.textContent = "";
 
     try {
+        const response = await fetch(
+            `/api/weather?city=${encodeURIComponent(city)}`
+        );
 
-        // Current weather
-        const weatherURL =
-            `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`;
+        const data = await response.json();
 
-        const weatherResponse = await fetch(weatherURL);
-
-        if (!weatherResponse.ok) {
-            throw new Error("City not found");
+        if (!response.ok) {
+            throw new Error(data.error || "City not found");
         }
 
-        const weatherData = await weatherResponse.json();
+        const weather = data.weather;
+        const forecastData = data.forecast;
 
-        // Display current weather
         cityName.textContent =
-            `${weatherData.name}, ${weatherData.sys.country}`;
+            `${weather.name}, ${weather.sys.country}`;
 
         temperature.textContent =
-            `${Math.round(weatherData.main.temp)}°C`;
+            `${Math.round(weather.main.temp)}°C`;
 
         weatherCondition.textContent =
-            weatherData.weather[0].description;
+            weather.weather[0].description;
 
         humidity.textContent =
-            `${weatherData.main.humidity}%`;
+            `${weather.main.humidity}%`;
 
         wind.textContent =
-            `${(weatherData.wind.speed * 3.6).toFixed(1)} km/h`;
+            `${(weather.wind.speed * 3.6).toFixed(1)} km/h`;
 
         feelsLike.textContent =
-            `${Math.round(weatherData.main.feels_like)}°C`;
+            `${Math.round(weather.main.feels_like)}°C`;
 
         weatherIcon.textContent =
-            getWeatherEmoji(weatherData.weather[0].main);
+            getWeatherEmoji(weather.weather[0].main);
 
-        // Get forecast
-        getForecast(city);
+        showForecast(forecastData);
 
     } catch (error) {
-
         errorMessage.textContent =
             "❌ City not found. Please try again.";
 
@@ -91,89 +82,55 @@ async function getWeather(city) {
         feelsLike.textContent = "--°C";
         weatherIcon.textContent = "🌤️";
 
+        forecast.innerHTML = "";
     }
 }
 
+function showForecast(data) {
+    forecast.innerHTML = "";
 
-async function getForecast(city) {
+    const dailyForecast = data.list.filter((item) =>
+        item.dt_txt.includes("12:00:00")
+    );
 
-    try {
+    dailyForecast.slice(0, 5).forEach((day) => {
+        const date = new Date(day.dt * 1000);
 
-        const forecastURL =
-            `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${API_KEY}&units=metric`;
-
-        const response = await fetch(forecastURL);
-
-        if (!response.ok) {
-            throw new Error("Forecast unavailable");
-        }
-
-        const data = await response.json();
-
-        forecast.innerHTML = "";
-
-        // OpenWeather gives forecast every 3 hours.
-        // We take one forecast approximately every 24 hours.
-        const dailyForecast = data.list.filter((item) =>
-            item.dt_txt.includes("12:00:00")
-        );
-
-        dailyForecast.slice(0, 5).forEach((day) => {
-
-            const date = new Date(day.dt * 1000);
-
-            const dayName = date.toLocaleDateString("en-US", {
-                weekday: "short"
-            });
-
-            const card = document.createElement("div");
-
-            card.classList.add("forecast-card");
-
-            card.innerHTML = `
-                <p>${dayName}</p>
-                <span>${getWeatherEmoji(day.weather[0].main)}</span>
-                <strong>${Math.round(day.main.temp)}°C</strong>
-            `;
-
-            forecast.appendChild(card);
+        const dayName = date.toLocaleDateString("en-US", {
+            weekday: "short"
         });
 
-    } catch (error) {
+        const card = document.createElement("div");
+        card.classList.add("forecast-card");
 
-        forecast.innerHTML =
-            "<p>Forecast unavailable</p>";
-    }
+        card.innerHTML = `
+            <p>${dayName}</p>
+            <span>${getWeatherEmoji(day.weather[0].main)}</span>
+            <strong>${Math.round(day.main.temp)}°C</strong>
+        `;
+
+        forecast.appendChild(card);
+    });
 }
 
-
 function getWeatherEmoji(condition) {
-
     switch (condition.toLowerCase()) {
-
         case "clear":
             return "☀️";
-
         case "clouds":
             return "☁️";
-
         case "rain":
             return "🌧️";
-
         case "drizzle":
             return "🌦️";
-
         case "thunderstorm":
             return "⛈️";
-
         case "snow":
             return "❄️";
-
         case "mist":
         case "fog":
         case "haze":
             return "🌫️";
-
         default:
             return "🌤️";
     }
