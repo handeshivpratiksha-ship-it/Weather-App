@@ -65,8 +65,12 @@ async function getWeather(city) {
         feelsLike.textContent =
             `${Math.round(weather.main.feels_like)}°C`;
 
+        const condition = weather.weather[0].main;
+
         weatherIcon.textContent =
-            getWeatherEmoji(weather.weather[0].main);
+            getWeatherEmoji(condition);
+
+        setWeatherBackground(condition);
 
         showForecast(forecastData);
 
@@ -83,6 +87,8 @@ async function getWeather(city) {
         weatherIcon.textContent = "🌤️";
 
         forecast.innerHTML = "";
+
+        document.body.className = "weather-default";
     }
 }
 
@@ -117,21 +123,58 @@ function getWeatherEmoji(condition) {
     switch (condition.toLowerCase()) {
         case "clear":
             return "☀️";
+
         case "clouds":
             return "☁️";
+
         case "rain":
             return "🌧️";
+
         case "drizzle":
             return "🌦️";
+
         case "thunderstorm":
             return "⛈️";
+
         case "snow":
             return "❄️";
+
         case "mist":
         case "fog":
         case "haze":
             return "🌫️";
+
         default:
             return "🌤️";
+    }
+}
+
+function setWeatherBackground(condition) {
+    document.body.className = "";
+
+    switch (condition.toLowerCase()) {
+        case "clear":
+            document.body.classList.add("weather-clear");
+            break;
+
+        case "clouds":
+            document.body.classList.add("weather-clouds");
+            break;
+
+        case "rain":
+        case "drizzle":
+            document.body.classList.add("weather-rain");
+            break;
+
+        case "thunderstorm":
+            document.body.classList.add("weather-storm");
+            break;
+
+        case "snow":
+            document.body.classList.add("weather-snow");
+            break;
+
+        default:
+            document.body.classList.add("weather-default");
     }
 }
