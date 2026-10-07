@@ -1,5 +1,7 @@
 const cityInput = document.getElementById("cityInput");
 const searchBtn = document.getElementById("searchBtn");
+const locationBtn = document.getElementById("locationBtn");
+
 
 const cityName = document.getElementById("cityName");
 const temperature = document.getElementById("temperature");
@@ -29,6 +31,95 @@ cityInput.addEventListener("keypress", (event) => {
     if (event.key === "Enter") {
         searchBtn.click();
     }
+});
+
+locationBtn.addEventListener("click", () => {
+
+    if (!navigator.geolocation) {
+        errorMessage.textContent =
+            "❌ Your browser does not support location.";
+        return;
+    }
+
+    errorMessage.textContent = "📍 Getting your location...";
+    errorMessage.classList.add("loading");
+
+    locationBtn.disabled = true;
+    locationBtn.textContent = "Getting Location...";
+
+    navigator.geolocation.getCurrentPosition(
+        async (position) => {
+
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+
+            try {
+                const response = await fetch(
+                    `/api/weather?lat=${lat}&lon=${lon}`
+                );
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || "Unable to get weather");
+                }
+
+                const weather = data.weather;
+                const forecastData = data.forecast;
+
+                cityName.textContent =
+                    `${weather.name}, ${weather.sys.country}`;
+
+                temperature.textContent =
+                    `${Math.round(weather.main.temp)}°C`;
+
+                weatherCondition.textContent =
+                    weather.weather[0].description;
+
+                humidity.textContent =
+                    `${weather.main.humidity}%`;
+
+                wind.textContent =
+                    `${(weather.wind.speed * 3.6).toFixed(1)} km/h`;
+
+                feelsLike.textContent =
+                    `${Math.round(weather.main.feels_like)}°C`;
+
+                const condition = weather.weather[0].main;
+
+                weatherIcon.textContent =
+                    getWeatherEmoji(condition);
+
+                setWeatherBackground(condition);
+
+                showForecast(forecastData);
+
+                errorMessage.textContent = "";
+                errorMessage.classList.remove("loading");
+
+            } catch (error) {
+
+                errorMessage.textContent =
+                    "❌ Unable to get weather for your location.";
+
+                errorMessage.classList.remove("loading");
+            }
+
+            locationBtn.disabled = false;
+            locationBtn.textContent = "📍 Use My Location";
+        },
+
+        () => {
+
+            errorMessage.textContent =
+                "❌ Location permission was denied.";
+
+            errorMessage.classList.remove("loading");
+
+            locationBtn.disabled = false;
+            locationBtn.textContent = "📍 Use My Location";
+        }
+    );
 });
 
 async function getWeather(city) {
