@@ -170,6 +170,14 @@ function getWeatherEmoji(condition) {
 function setWeatherBackground(condition) {
     document.body.className = "";
 
+    const currentHour = new Date().getHours();
+    const isNight = currentHour >= 19 || currentHour < 6;
+
+    if (isNight) {
+        document.body.classList.add("weather-night");
+        return;
+    }
+
     switch (condition.toLowerCase()) {
         case "clear":
             document.body.classList.add("weather-clear");
