@@ -220,3 +220,13 @@ h1 {
         font-size: 40px;
     }
 }
+#errorMessage.loading {
+    color: #2196f3;
+    font-weight: bold;
+    text-align: center;
+}
+
+.search-box button:disabled {
+    opacity: 0.7;
+    cursor: wait;
+}

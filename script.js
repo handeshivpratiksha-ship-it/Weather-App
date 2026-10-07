@@ -18,6 +18,7 @@ searchBtn.addEventListener("click", () => {
 
     if (city === "") {
         errorMessage.textContent = "Please enter a city name.";
+        errorMessage.classList.remove("loading");
         return;
     }
 
@@ -31,7 +32,13 @@ cityInput.addEventListener("keypress", (event) => {
 });
 
 async function getWeather(city) {
-    errorMessage.textContent = "";
+
+    // Loading state
+    errorMessage.textContent = "⏳ Getting weather...";
+    errorMessage.classList.add("loading");
+
+    searchBtn.disabled = true;
+    searchBtn.textContent = "Searching...";
 
     try {
         const response = await fetch(
@@ -74,9 +81,16 @@ async function getWeather(city) {
 
         showForecast(forecastData);
 
+        // Remove loading message
+        errorMessage.textContent = "";
+        errorMessage.classList.remove("loading");
+
     } catch (error) {
+
         errorMessage.textContent =
             "❌ City not found. Please try again.";
+
+        errorMessage.classList.remove("loading");
 
         cityName.textContent = "Search for a city";
         temperature.textContent = "--°C";
@@ -90,6 +104,10 @@ async function getWeather(city) {
 
         document.body.className = "weather-default";
     }
+
+    // Reset button
+    searchBtn.disabled = false;
+    searchBtn.textContent = "Search";
 }
 
 function showForecast(data) {
