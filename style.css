@@ -1,105 +1,97 @@
 * {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
 }
 
 body {
     font-family: Arial, sans-serif;
     min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 30px;
-
     background: linear-gradient(135deg, #74ebd5, #4facfe);
+    padding: 40px 20px;
+    color: #222;
 }
 
 .weather-app {
     width: 100%;
     max-width: 850px;
+    margin: auto;
+    background: rgba(255, 255, 255, 0.95);
     padding: 35px;
-
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(15px);
-
-    border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 25px;
-
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
-    color: white;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
 }
 
 h1 {
     text-align: center;
-    font-size: 40px;
+    font-size: 42px;
     margin-bottom: 8px;
 }
 
 .subtitle {
     text-align: center;
-    margin-bottom: 30px;
-    font-size: 16px;
+    font-size: 18px;
+    color: #555;
+    margin-bottom: 28px;
 }
 
 /* Search */
 
 .search-box {
     display: flex;
-    gap: 10px;
+    gap: 12px;
     margin-bottom: 25px;
 }
 
 .search-box input {
     flex: 1;
-    padding: 15px 18px;
-    border: none;
+    padding: 16px 18px;
+    border: 2px solid #ddd;
+    border-radius: 14px;
+    font-size: 17px;
     outline: none;
+}
 
-    border-radius: 12px;
-    font-size: 16px;
+.search-box input:focus {
+    border-color: #4facfe;
 }
 
 .search-box button {
-    padding: 15px 25px;
+    padding: 16px 28px;
     border: none;
-    border-radius: 12px;
-
-    background: #ffffff;
-    color: #1976d2;
-
-    font-size: 16px;
+    border-radius: 14px;
+    background: #4facfe;
+    color: white;
+    font-size: 17px;
     font-weight: bold;
     cursor: pointer;
-
-    transition: 0.3s;
 }
 
 .search-box button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 /* Error */
 
 #errorMessage {
     text-align: center;
-    color: #ffdddd;
+    color: #e53935;
     margin-bottom: 15px;
 }
 
-/* Weather Card */
+/* Current Weather */
 
 .weather-card {
-    padding: 25px;
+    background: linear-gradient(135deg, #eaf7ff, #f8fcff);
     border-radius: 20px;
-
-    background: rgba(255, 255, 255, 0.18);
-    text-align: center;
+    padding: 28px;
+    margin-bottom: 30px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
 .weather-card h2 {
-    font-size: 28px;
+    text-align: center;
+    font-size: 30px;
     margin-bottom: 20px;
 }
 
@@ -108,35 +100,38 @@ h1 {
     justify-content: center;
     align-items: center;
     gap: 25px;
+    margin-bottom: 25px;
 }
 
 #weatherIcon {
-    font-size: 80px;
+    font-size: 65px;
 }
 
 #temperature {
-    font-size: 55px;
+    font-size: 48px;
+    margin-bottom: 5px;
 }
 
 #weatherCondition {
-    font-size: 20px;
+    font-size: 19px;
     text-transform: capitalize;
+    color: #555;
 }
 
-/* Details */
+/* Weather Details */
 
 .weather-details {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 15px;
-    margin-top: 30px;
 }
 
 .detail {
+    background: white;
     padding: 18px;
     border-radius: 15px;
-
-    background: rgba(255, 255, 255, 0.15);
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
 .detail span {
@@ -144,18 +139,20 @@ h1 {
 }
 
 .detail p {
-    margin: 8px 0;
+    margin: 8px 0 5px;
+    color: #666;
 }
 
 .detail strong {
-    font-size: 18px;
+    font-size: 20px;
 }
 
 /* Forecast */
 
 .forecast-title {
-    margin: 30px 0 15px;
     text-align: center;
+    font-size: 28px;
+    margin-bottom: 18px;
 }
 
 .forecast-container {
@@ -165,28 +162,21 @@ h1 {
 }
 
 .forecast-card {
+    background: #f5f9ff;
     padding: 18px 10px;
+    border-radius: 16px;
     text-align: center;
-
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 15px;
-
-    transition: 0.3s;
-}
-
-.forecast-card:hover {
-    transform: translateY(-5px);
-    background: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
 }
 
 .forecast-card p {
-    margin-bottom: 10px;
     font-weight: bold;
+    margin-bottom: 12px;
 }
 
 .forecast-card span {
     display: block;
-    font-size: 35px;
+    font-size: 30px;
     margin-bottom: 10px;
 }
 
@@ -199,11 +189,11 @@ h1 {
 @media (max-width: 650px) {
 
     body {
-        padding: 15px;
+        padding: 20px 12px;
     }
 
     .weather-app {
-        padding: 25px 18px;
+        padding: 22px;
     }
 
     h1 {
@@ -212,6 +202,10 @@ h1 {
 
     .search-box {
         flex-direction: column;
+    }
+
+    .search-box button {
+        width: 100%;
     }
 
     .weather-details {
@@ -223,10 +217,6 @@ h1 {
     }
 
     #temperature {
-        font-size: 42px;
-    }
-
-    #weatherIcon {
-        font-size: 60px;
+        font-size: 40px;
     }
 }
